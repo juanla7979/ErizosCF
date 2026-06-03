@@ -1,0 +1,474 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:ErizosCF.ViewModels"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             xmlns:converters="clr-namespace:ErizosCF.Services"
+             x:Class="ErizosCF.Views.ComparePage"
+             Title="Análisis Uno a Uno"
+             BackgroundColor="#0A0A0A">
+
+    <ContentPage.BindingContext>
+        <viewmodels:CompareViewModel/>
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <converters:DifficultyColorConverter x:Key="DifficultyColorConverter"/>
+
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="#E0E0E0"/>
+        </Style>
+
+        <Style TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="#1E1E1E"/>
+            <Setter Property="TextColor" Value="#FFFFFF"/>
+            <Setter Property="PlaceholderColor" Value="#808080"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="BackgroundColor" Value="#1E1E1E"/>
+            <Setter Property="TextColor" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="Frame" x:Key="GraphFrame">
+            <Setter Property="BackgroundColor" Value="#2A2A3A"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="20">
+
+            <!-- Header -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="20"
+                   HeightRequest="100">
+                <VerticalStackLayout>
+                    <Label Text="Análisis"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+                    <Label Text="Análisis completo de rendimiento en Codeforces"
+                           FontSize="12"
+                           TextColor="#A0A0A0"
+                           Margin="0,5,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Panel de búsqueda -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Entry Grid.Column="0"
+                               Placeholder="Usuario 1 (handle)"
+                               Text="{Binding Handle1}"
+                               PlaceholderColor="#808080"
+                               FontSize="14"/>
+
+                        <Entry Grid.Column="1"
+                               Placeholder="Usuario 2 (handle)"
+                               Text="{Binding Handle2}"
+                               PlaceholderColor="#808080"
+                               FontSize="14"/>
+                    </Grid>
+
+                    <HorizontalStackLayout Spacing="12">
+                        <DatePicker Date="{Binding FechaInicio}"
+                                    Format="dd/MM/yyyy"
+                                    HorizontalOptions="FillAndExpand"/>
+                        <Label Text="---" 
+                               TextColor="#FFFFFF"
+                               VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding FechaFin}"
+                                    Format="dd/MM/yyyy"
+                                    HorizontalOptions="FillAndExpand"/>
+
+                        <Button Text="ANALIZAR"
+                            Command="{Binding CompararCommand}"
+                            BackgroundColor="#9B59B6"
+                            TextColor="White"
+                            CornerRadius="12"
+                            FontAttributes="Bold"
+                            HeightRequest="50"/>
+                    </HorizontalStackLayout>
+
+                    
+                </VerticalStackLayout>
+            </Frame>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#FF6B6B"/>
+
+            <!-- Leyenda explicativa de gráficas -->
+            <Frame 
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="¿CÓMO INTERPRETAR LAS GRÁFICAS?"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto,*" RowSpacing="8" ColumnSpacing="12">
+                        <Label Grid.Row="0" Grid.Column="0" Text="" FontSize="14"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="Evolución de Rating: Muestra cómo ha cambiado el nivel del usuario en cada competencia"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="2" Text="" FontSize="12" TextColor="#4CAF50"/>
+                        <Label Grid.Row="0" Grid.Column="3" Text="Más puntos = mejor nivel"
+                               FontSize="11" TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="" FontSize="14"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="Distribución por Tags: Temas de programación que más domina"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                        <Label Grid.Row="1" Grid.Column="2" Text="" FontSize="12" TextColor="#4CAF50"/>
+                        <Label Grid.Row="1" Grid.Column="3" Text="Porción más grande = especialidad"
+                               FontSize="11" TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="" FontSize="14"/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="Dificultad: Nivel de los problemas resueltos (800 = fácil, 3500+ = experto)"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                        <Label Grid.Row="2" Grid.Column="2" Text="" FontSize="12" TextColor="#4CAF50"/>
+                        <Label Grid.Row="2" Grid.Column="3" Text="Más alto = más desafiante"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                    </Grid>
+
+                    <BoxView Color="#404040" HeightRequest="1" Margin="0,8"/>
+
+                    <Label Text="Los valores están en escala numérica. Las líneas de cuadrícula ayudan a comparar los cambios entre competencias."
+                           FontSize="10" TextColor="#808080" FontAttributes="Italic"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Usuario 1 -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding User1.Handle, FallbackValue='Usuario 1'}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#FF6B6B"
+                           HorizontalOptions="Center"/>
+
+                    <BoxView Color="#FF6B6B"
+                             HeightRequest="2"
+                             HorizontalOptions="Fill"/>
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" 
+                               Text="Rating"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="1" 
+                               Text="{Binding User1.CurrentRating, FallbackValue='0'}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                               Text="Solved"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding User1.TotalSolved, FallbackValue='0'}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"/>
+                    </Grid>
+
+                    <Label Text="{Binding User1.Rank, FallbackValue='No rank'}"
+                           FontSize="11"
+                           TextColor="#A0A0A0"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Usuario 2 -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="{Binding User2.Handle, FallbackValue='Usuario 2'}"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#4ECDC4"
+                           HorizontalOptions="Center"/>
+
+                    <BoxView Color="#4ECDC4"
+                             HeightRequest="2"
+                             HorizontalOptions="Fill"/>
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" 
+                               Text="Rating"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="1" 
+                               Text="{Binding User2.CurrentRating, FallbackValue='0'}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                               Text="Solved"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding User2.TotalSolved, FallbackValue='0'}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"/>
+                    </Grid>
+
+                    <Label Text="{Binding User2.Rank, FallbackValue='No rank'}"
+                           FontSize="11"
+                           TextColor="#A0A0A0"
+                           HorizontalOptions="Center"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Métricas adicionales -->
+            <Frame 
+       CornerRadius="20"
+       Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="COMPARACIÓN DETALLADA"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#FFFFFF"/>
+
+                    <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" 
+                   Text="Total Problemas"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="2" 
+                   Text="Total Problemas"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="1" 
+                   Text="vs"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="#FFFFFF"
+                   HorizontalOptions="Center"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                   Text="{Binding User1.TotalSolved, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#FF6B6B"
+                   HorizontalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="2" 
+                   Text="{Binding User2.TotalSolved, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#4ECDC4"
+                   HorizontalOptions="Center"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" 
+                   Text="Rating Actual"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="2" Grid.Column="2" 
+                   Text="Rating Actual"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" 
+                   Text="{Binding User1.CurrentRating, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#FF6B6B"
+                   HorizontalOptions="Center"/>
+                        <Label Grid.Row="3" Grid.Column="2" 
+                   Text="{Binding User2.CurrentRating, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#4ECDC4"
+                   HorizontalOptions="Center"/>
+
+                        <Label Grid.Row="4" Grid.Column="0" 
+                   Text="Promedio diario"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="4" Grid.Column="2" 
+                   Text="Promedio diario"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="5" Grid.Column="0" 
+                   Text="{Binding User1.AvgDailyProblems, FallbackValue='0', StringFormat='{0:F2}'}"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#FF6B6B"
+                   HorizontalOptions="Center"/>
+                        <Label Grid.Row="5" Grid.Column="2" 
+                   Text="{Binding User2.AvgDailyProblems, FallbackValue='0', StringFormat='{0:F2}'}"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#4ECDC4"
+                   HorizontalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Rating History - Usuario 1 -->
+            <Frame 
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="EVOLUCIÓN DEL RATING"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+                    <Label Text="{Binding User1.Handle, FallbackValue='User 1'}"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#FF6B6B"
+                           HorizontalOptions="Start"/>
+
+                    <microcharts:ChartView 
+                        Chart="{Binding RatingChart1}"
+                        HeightRequest="300"/>
+
+                    <Label Text="Cada punto representa una competencia. La línea muestra la tendencia de mejora."
+                           FontSize="9"
+                           TextColor="#808080"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Rating History - Usuario 2 -->
+            <Frame 
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="EVOLUCIÓN DEL RATING"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+                    <Label Text="{Binding User2.Handle, FallbackValue='User 2'}"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#4ECDC4"
+                           HorizontalOptions="Start"/>
+
+                    <microcharts:ChartView 
+                        Chart="{Binding RatingChart2}"
+                        HeightRequest="300"/>
+
+                    <Label Text="Cada punto representa una competencia. La línea muestra la tendencia de mejora."
+                           FontSize="9"
+                           TextColor="#808080"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Tag Statistics - Ambos Usuarios -->
+            <Frame CornerRadius="12" Padding="12">
+                <VerticalStackLayout Spacing="12">
+
+                    <!-- Título principal -->
+                    <Label Text="TOP TAGS (ESPECIALIDADES)"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#FFFFFF"
+               HorizontalOptions="Center"/>
+
+                    <!-- Grid de 2 columnas para los usuarios -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+
+                        <!-- Columna 0: Usuario 1 -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="8">
+                            <Label Text="{Binding User1.Handle, FallbackValue='User 1'}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#FF6B6B"
+                       HorizontalOptions="Center"/>
+
+                            <microcharts:ChartView 
+                    Chart="{Binding TagChart1}"
+                    HeightRequest="400"/>
+
+                            <Label Text="Los tags más grandes indican las áreas donde el usuario ha resuelto más problemas."
+                       FontSize="9"
+                       TextColor="#808080"
+                       HorizontalOptions="Start"/>
+                        </VerticalStackLayout>
+
+                        <!-- Columna 1: Usuario 2 -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                            <Label Text="{Binding User2.Handle, FallbackValue='User 2'}"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#4ECDC4"
+                       HorizontalOptions="Center"/>
+
+                            <microcharts:ChartView 
+                    Chart="{Binding TagChart2}"
+                    HeightRequest="400"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+
+
+            <!-- Difficulty Distribution -->
+            <Frame
+       CornerRadius="12"
+       Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="DISTRIBUCIÓN POR DIFICULTAD"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#FFFFFF"/>
+
+                    <Label Text="{Binding User1.Handle, FallbackValue='Usuario 1'}"
+               FontSize="12"
+               FontAttributes="Bold"
+               TextColor="#FF6B6B"
+               HorizontalOptions="Start"/>
+
+                    <microcharts:ChartView 
+            Chart="{Binding DifficultyChart1}"
+            HeightRequest="200"/>
+
+
+                    <Label Text="{Binding User2.Handle, FallbackValue='Usuario 2'}"
+               FontSize="12"
+               FontAttributes="Bold"
+               TextColor="#4ECDC4"
+               HorizontalOptions="Start"/>
+
+                    <microcharts:ChartView 
+            Chart="{Binding DifficultyChart2}"
+            HeightRequest="200"/>
+
+                    <Label Text="La dificultad incrementa exponencialmente"
+               FontSize="9"
+               TextColor="#808080"
+               HorizontalOptions="Center"
+               Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

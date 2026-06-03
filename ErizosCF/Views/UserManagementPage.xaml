@@ -1,0 +1,171 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:ErizosCF.ViewModels"
+             xmlns:conv="clr-namespace:ErizosCF.Services"
+             x:Class="ErizosCF.Views.UserManagementPage"
+             Title="Usuarios"
+             BackgroundColor="#0A0A0A">
+
+    <Grid>
+
+        <!-- CONTENIDO -->
+        <ScrollView>
+            <VerticalStackLayout Padding="16" Spacing="20">
+
+                <!-- HEADER -->
+                <Frame CornerRadius="20"
+                       Padding="20"
+                       HeightRequest="100"
+                       HasShadow="True">
+                    <VerticalStackLayout>
+                        <Label Text="Administración de usuarios"
+                               FontSize="18"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"/>
+                        <Label Text="Gestiona borrado logico de los usuarios"
+                               FontSize="12"
+                               TextColor="#A0A0A0"
+                               Margin="0,5,0,0"/>
+                    </VerticalStackLayout>
+                </Frame>
+
+                <!-- TOGGLE -->
+                <Frame CornerRadius="16"
+                       Padding="16"
+                       HasShadow="True">
+                    <HorizontalStackLayout Spacing="12">
+                        <CheckBox IsChecked="{Binding MostrarEliminados}" />
+                        <Label Text="Mostrar eliminados"
+                               VerticalOptions="Center"
+                               FontSize="14"
+                               TextColor="#E0E0E0"/>
+
+                        <!-- BOTONES -->
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <Button Grid.Column="0"
+                                    Text="Cancelar"
+                                    Command="{Binding CancelarCambiosCommand}"
+                                    BackgroundColor="#3A3A4A"
+                                    TextColor="#E0E0E0"
+                                    CornerRadius="12"
+                                    FontAttributes="Bold"
+                                    HeightRequest="44"/>
+
+                            <Button Grid.Column="1"
+                                    Text="Guardar"
+                                    Command="{Binding GuardarCambiosCommand}"
+                                    BackgroundColor="#4CAF50"
+                                    TextColor="White"
+                                    CornerRadius="12"
+                                    FontAttributes="Bold"
+                                    HeightRequest="44"/>
+                        </Grid>
+                    </HorizontalStackLayout>
+                </Frame>
+
+                <!-- LOADING OVERLAY -->
+                <Grid IsVisible="{Binding IsLoading}"
+                      AbsoluteLayout.LayoutFlags="PositionProportional"
+                      AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+                    <VerticalStackLayout VerticalOptions="Center"
+                                         HorizontalOptions="Center"
+                                         Spacing="12">
+
+                        <ActivityIndicator IsRunning="True"
+                                           Color="#9B59B6"/>
+
+                        <Label Text="{Binding LoadingText}"
+                               TextColor="#FFFFFF"
+                               FontSize="14"
+                               FontAttributes="Bold"/>
+
+                    </VerticalStackLayout>
+                </Grid>
+
+                
+
+                <!-- LISTA -->
+                <Frame CornerRadius="20"
+                       Padding="0"
+                       HasShadow="True">
+                    <CollectionView ItemsSource="{Binding Usuarios}"
+                                    SelectionMode="None">
+
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+
+                                <Frame Margin="0,6"
+                                       Padding="16"
+                                       CornerRadius="14"
+                                       HasShadow="False">
+
+                                    <Grid ColumnDefinitions="Auto,*,Auto"
+                                          ColumnSpacing="12">
+
+                                        <!-- CHECK -->
+                                        <CheckBox IsChecked="{Binding Activo}"
+                                                  VerticalOptions="Center"/>
+
+                                        <!-- INFO -->
+                                        <VerticalStackLayout Grid.Column="1" Spacing="4">
+
+                                            <Label Text="{Binding Handle}"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#FFFFFF"/>
+
+                                            <Label Text="{Binding FirstName}"
+                                                   FontSize="13"
+                                                   TextColor="#A0A0A0"/>
+
+                                            <Label Text="{Binding LastName}"
+                                                   FontSize="13"
+                                                   TextColor="#A0A0A0"/>
+
+                                        </VerticalStackLayout>
+
+                                        <!-- STATUS SIMPLE -->
+                                        <Label Grid.Column="2"
+                                               Text="{Binding Activo, Converter={StaticResource BoolToTextConverter}}"
+                                               FontSize="11"
+                                               FontAttributes="Bold"
+                                               TextColor="{Binding Activo, Converter={StaticResource BoolToColorConverter}}"
+                                               VerticalOptions="Center"/>
+
+                                    </Grid>
+
+                                </Frame>
+
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+
+                    </CollectionView>
+                </Frame>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- LOADING GLOBAL -->
+        <Grid IsVisible="{Binding IsLoading}"
+              AbsoluteLayout.LayoutFlags="PositionProportional"
+              AbsoluteLayout.LayoutBounds="0,0,1,1">
+
+            <VerticalStackLayout VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="12">
+
+                <ActivityIndicator IsRunning="True"
+                                   Color="#9B59B6"/>
+
+                <Label Text="{Binding LoadingText}"
+                       TextColor="#FFFFFF"
+                       FontSize="14"
+                       FontAttributes="Bold"/>
+
+            </VerticalStackLayout>
+        </Grid>
+
+    </Grid>
+
+</ContentPage>

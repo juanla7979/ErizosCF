@@ -1,0 +1,502 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:microcharts="clr-namespace:Microcharts.Maui;assembly=Microcharts.Maui"
+             x:Class="ErizosCF.Views.CompareTeamPage"
+             Title="Análisis por Equipo"
+             BackgroundColor="#0A0A0A">
+
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="TextColor" Value="#E0E0E0"/>
+        </Style>
+
+        <Style TargetType="Entry">
+            <Setter Property="BackgroundColor" Value="#1E1E1E"/>
+            <Setter Property="TextColor" Value="#FFFFFF"/>
+            <Setter Property="PlaceholderColor" Value="#808080"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="DatePicker">
+            <Setter Property="BackgroundColor" Value="#1E1E1E"/>
+            <Setter Property="TextColor" Value="#FFFFFF"/>
+            <Setter Property="FontSize" Value="14"/>
+        </Style>
+
+        <Style TargetType="Frame" x:Key="GraphFrame">
+            <Setter Property="BackgroundColor" Value="#2A2A3A"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="12"/>
+            <Setter Property="Margin" Value="0,0,0,12"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="20">
+
+            <!-- Header -->
+            <Frame
+                   CornerRadius="20"
+                   Padding="20"
+                   HeightRequest="100">
+                <VerticalStackLayout>
+                    <Label Text="Análisis"
+                           FontSize="18"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+                    <Label Text="Análisis completo de equipos en Codeforces (hasta 3 integrantes)"
+                           FontSize="12"
+                           TextColor="#A0A0A0"
+                           Margin="0,5,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <Frame>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+
+                    <!-- Equipo 1 - Columna 0 -->
+                    <VerticalStackLayout Grid.Column="0"
+                             Spacing="12">
+
+                        <Label Text="EQUIPO 1"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#9B59B6"
+                   HorizontalOptions="Center"/>
+
+                        <Entry Placeholder="Miembro 1 (handle)"
+                   Text="{Binding Team1Member1}"
+                   PlaceholderColor="#808080"
+                   FontSize="14"/>
+
+                        <Entry Placeholder="Miembro 2 (handle) (opcional)"
+                   Text="{Binding Team1Member2}"
+                   PlaceholderColor="#808080"
+                   FontSize="14"/>
+
+                        <Entry Placeholder="Miembro 3 (handle) (opcional)"
+                   Text="{Binding Team1Member3}"
+                   PlaceholderColor="#808080"
+                   FontSize="14"/>
+
+                    </VerticalStackLayout>
+
+                    <!-- Equipo 2 - Columna 1 -->
+                    <VerticalStackLayout Grid.Column="1"
+                             Spacing="12">
+
+                        <Label Text="EQUIPO 2"
+                   FontSize="14"
+                   FontAttributes="Bold"
+                   TextColor="#FF6B6B"
+                   HorizontalOptions="Center"/>
+
+                        <Entry Placeholder="Miembro 1 (handle)"
+                   Text="{Binding Team2Member1}"
+                   PlaceholderColor="#808080"
+                   FontSize="14"/>
+
+                        <Entry Placeholder="Miembro 2 (handle) (opcional)"
+                   Text="{Binding Team2Member2}"
+                   PlaceholderColor="#808080"
+                   FontSize="14"/>
+
+                        <Entry Placeholder="Miembro 3 (handle) (opcional)"
+                   Text="{Binding Team2Member3}"
+                   PlaceholderColor="#808080"
+                   FontSize="14"/>
+
+                    </VerticalStackLayout>
+
+                </Grid>
+            </Frame>
+
+            <!-- Fechas y botón -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="15">
+                    <HorizontalStackLayout Spacing="12">
+                        <DatePicker Date="{Binding FechaInicio}"
+                                    Format="dd/MM/yyyy"
+                                    HorizontalOptions="FillAndExpand"/>
+                        <Label Text="---" 
+                               TextColor="#FFFFFF"
+                               VerticalOptions="Center"/>
+                        <DatePicker Date="{Binding FechaFin}"
+                                    Format="dd/MM/yyyy"
+                                    HorizontalOptions="FillAndExpand"/>
+
+                        <Button Text="ANALIZAR EQUIPOS"
+                                Command="{Binding CompararCommand}"
+                                BackgroundColor="#9B59B6"
+                                TextColor="White"
+                                CornerRadius="12"
+                                FontAttributes="Bold"
+                                HeightRequest="50"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <ActivityIndicator IsRunning="{Binding IsLoading}"
+                               IsVisible="{Binding IsLoading}"
+                               Color="#9B59B6"/>
+
+            <!-- Leyenda explicativa de gráficas -->
+            <Frame 
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="¿CÓMO INTERPRETAR LAS GRÁFICAS?"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+
+                    <Grid RowDefinitions="Auto,Auto,Auto" ColumnDefinitions="Auto,*,Auto,*" RowSpacing="8" ColumnSpacing="12">
+                        <Label Grid.Row="0" Grid.Column="0" Text="" FontSize="14"/>
+                        <Label Grid.Row="0" Grid.Column="1" Text="Evolución de Rating: Promedio del equipo en cada competencia"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="2" Text="" FontSize="12" TextColor="#4CAF50"/>
+                        <Label Grid.Row="0" Grid.Column="3" Text="Más puntos = mejor nivel"
+                               FontSize="11" TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="" FontSize="14"/>
+                        <Label Grid.Row="1" Grid.Column="1" Text="Distribución por Tags: Temas que más domina el equipo"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                        <Label Grid.Row="1" Grid.Column="2" Text="" FontSize="12" TextColor="#4CAF50"/>
+                        <Label Grid.Row="1" Grid.Column="3" Text="Porción más grande = especialidad"
+                               FontSize="11" TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="" FontSize="14"/>
+                        <Label Grid.Row="2" Grid.Column="1" Text="Dificultad: Nivel de los problemas resueltos (800 = fácil, 3500+ = experto)"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                        <Label Grid.Row="2" Grid.Column="2" Text="" FontSize="12" TextColor="#4CAF50"/>
+                        <Label Grid.Row="2" Grid.Column="3" Text="Más alto = más desafiante"
+                               FontSize="11" TextColor="#A0A0A0"/>
+                    </Grid>
+
+                    <BoxView Color="#404040" HeightRequest="1" Margin="0,8"/>
+
+                    <Label Text="Los tags con el mismo color en ambos equipos representan las mismas áreas de conocimiento."
+                           FontSize="10" TextColor="#808080" FontAttributes="Italic"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Equipo 1 -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+
+                    <BoxView Color="#9B59B6"
+                             HeightRequest="2"
+                             HorizontalOptions="Fill"/>
+
+                    <Label Text="Miembros:"
+                           FontSize="12"
+                           TextColor="#A0A0A0"/>
+
+                    <StackLayout>
+                        <StackLayout BindableLayout.ItemsSource="{Binding Team1.Members}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding}"
+                                           FontSize="18"
+                                           TextColor="#9B59B6"
+                                           FontAttributes="Bold"
+                                           Margin="10,2"/>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </StackLayout>
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" 
+                               Text="Rating Promedio"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="1" 
+                               Text="{Binding Team1.AvgRating, FallbackValue='0'}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"
+                               HorizontalOptions="End"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                               Text="Problemas Únicos"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding TotalProblemas1, FallbackValue='0'}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"
+                               HorizontalOptions="End"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Equipo 2 -->
+            <Frame 
+                   CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <VerticalStackLayout Spacing="12">
+
+                    <BoxView Color="#FF6B6B"
+                             HeightRequest="2"
+                             HorizontalOptions="Fill"/>
+
+                    <Label Text="Miembros:"
+                           FontSize="12"
+                           TextColor="#A0A0A0"/>
+
+                    <StackLayout>
+                        <StackLayout BindableLayout.ItemsSource="{Binding Team2.Members}">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Label Text="{Binding}"
+                                           FontSize="18"
+                                           TextColor="#FF6B6B"
+                                           FontAttributes="Bold"
+                                           Margin="10,2"/>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </StackLayout>
+
+                    <Grid ColumnDefinitions="Auto,*" RowDefinitions="Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" 
+                               Text="Rating Promedio"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="1" 
+                               Text="{Binding Team2.AvgRating, FallbackValue='0'}"
+                               FontSize="24"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"
+                               HorizontalOptions="End"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                               Text="Problemas Únicos"
+                               FontSize="12"
+                               TextColor="#A0A0A0"/>
+                        <Label Grid.Row="1" Grid.Column="1" 
+                               Text="{Binding TotalProblemas2, FallbackValue='0'}"
+                               FontSize="20"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"
+                               HorizontalOptions="End"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Métricas adicionales de comparación -->
+            <Frame 
+       CornerRadius="20"
+       Padding="16">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="COMPARACIÓN DE EQUIPOS"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#FFFFFF"/>
+
+                    <Grid ColumnDefinitions="*,Auto,*" RowDefinitions="Auto,Auto,Auto" ColumnSpacing="8">
+                        <Label Grid.Row="0" Grid.Column="0" 
+                   Text="Problemas Únicos"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="2" 
+                   Text="Problemas Únicos"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="0" Grid.Column="1" 
+                   Text="vs"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="#FFFFFF"
+                   HorizontalOptions="Center"/>
+
+                        <Label Grid.Row="1" Grid.Column="0" 
+                   Text="{Binding TotalProblemas1, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#9B59B6"
+                   HorizontalOptions="Center"/>
+                        <Label Grid.Row="1" Grid.Column="2" 
+                   Text="{Binding TotalProblemas2, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#FF6B6B"
+                   HorizontalOptions="Center"/>
+
+                        <Label Grid.Row="2" Grid.Column="0" 
+                   Text="Rating Promedio"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+                        <Label Grid.Row="2" Grid.Column="2" 
+                   Text="Rating Promedio"
+                   FontSize="12"
+                   TextColor="#A0A0A0"/>
+
+                        <Label Grid.Row="3" Grid.Column="0" 
+                   Text="{Binding Team1.AvgRating, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#9B59B6"
+                   HorizontalOptions="Center"/>
+                        <Label Grid.Row="3" Grid.Column="2" 
+                   Text="{Binding Team2.AvgRating, FallbackValue='0'}"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   TextColor="#FF6B6B"
+                   HorizontalOptions="Center"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Rating History - Equipo 1 -->
+            <Frame 
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="EVOLUCIÓN DEL RATING (PROMEDIO)"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+                    <Label Text="Equipo 1"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#9B59B6"
+                           HorizontalOptions="Start"/>
+
+                    <microcharts:ChartView 
+                        Chart="{Binding RatingChart1}"
+                        HeightRequest="300"/>
+
+                    <Label Text="Cada punto representa el rating promedio del equipo en cada competencia."
+                           FontSize="9"
+                           TextColor="#808080"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Rating History - Equipo 2 -->
+            <Frame 
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="EVOLUCIÓN DEL RATING (PROMEDIO)"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+                    <Label Text="Equipo 2"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#FF6B6B"
+                           HorizontalOptions="Start"/>
+
+                    <microcharts:ChartView 
+                        Chart="{Binding RatingChart2}"
+                        HeightRequest="300"/>
+
+                    <Label Text="Cada punto representa el rating promedio del equipo en cada competencia."
+                           FontSize="9"
+                           TextColor="#808080"
+                           HorizontalOptions="Center"
+                           Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Tag Statistics - Ambos Equipos -->
+            <Frame CornerRadius="12" Padding="12">
+                <VerticalStackLayout Spacing="12">
+
+                    <!-- Título principal -->
+                    <Label Text="TOP TAGS DEL EQUIPO"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#FFD700"
+               HorizontalOptions="Center"/>
+
+                    <!-- Grid de 2 columnas para los equipos -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="16">
+
+                        <!-- Columna 0: Equipo 1 -->
+                        <VerticalStackLayout Grid.Column="0" Spacing="8">
+                            <Label Text="Equipo 1"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#9B59B6"
+                       HorizontalOptions="Center"/>
+
+                            <microcharts:ChartView 
+                    Chart="{Binding TagChart1}"
+                    HeightRequest="400"/>
+
+                            <Label Text="Los tags más grandes indican las áreas donde el equipo ha resuelto más problemas."
+                       FontSize="9"
+                       TextColor="#808080"
+                       HorizontalOptions="Start"/>
+                        </VerticalStackLayout>
+
+                        <!-- Columna 1: Equipo 2 -->
+                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                            <Label Text="Equipo 2"
+                       FontSize="12"
+                       FontAttributes="Bold"
+                       TextColor="#FF6B6B"
+                       HorizontalOptions="Center"/>
+
+                            <microcharts:ChartView 
+                    Chart="{Binding TagChart2}"
+                    HeightRequest="400"/>
+
+                        </VerticalStackLayout>
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Difficulty Distribution -->
+            <Frame
+                   CornerRadius="12"
+                   Padding="12">
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="DISTRIBUCIÓN POR DIFICULTAD"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"/>
+
+                    <Label Text="Equipo 1"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#9B59B6"/>
+                    <microcharts:ChartView 
+                        Chart="{Binding DifficultyChart1}"
+                        HeightRequest="200"/>
+
+
+                    <Label Text="Equipo 2"
+                           FontSize="12"
+                           FontAttributes="Bold"
+                           TextColor="#FF6B6B"/>
+                    <microcharts:ChartView 
+                        Chart="{Binding DifficultyChart2}"
+                        HeightRequest="200"/>
+
+                    <Label Text="La dificultad incrementa exponencialmente"
+                            FontSize="9"
+                            TextColor="#808080"
+                            HorizontalOptions="Center"
+                            Margin="0,8,0,0"/>
+                </VerticalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

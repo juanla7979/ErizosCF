@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:ErizosCF.Services"
+             x:Class="ErizosCF.Views.HitosPage"
+             xmlns:viewmodels="clr-namespace:ErizosCF.ViewModels"
+             Title="Hitos - Logros"
+             BackgroundColor="#0A0A0A">
+
+    <ContentPage.Resources>
+        <converters:IsNotNullConverter x:Key="IsNotNullConverter"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*"
+          Padding="16"
+          RowSpacing="16"
+          BackgroundColor="#0A0A0A">
+
+        <!-- Filtros (arriba) -->
+        <VerticalStackLayout Spacing="12">
+            <!-- Filtros (arriba) -->
+            <Frame CornerRadius="20"
+       Padding="16"
+       HasShadow="True">
+                <HorizontalStackLayout Spacing="16">
+                    <Label Text="Filtrar por fecha"
+               FontSize="14"
+               FontAttributes="Bold"
+               TextColor="#FFFFFF"
+               VerticalOptions="Center"/>
+
+                    <BoxView Color="#9B59B6"
+                 WidthRequest="2"
+                 HeightRequest="30"
+                 VerticalOptions="Center"/>
+
+                    <Grid ColumnDefinitions="Auto,*,Auto,*,Auto"
+              ColumnSpacing="12"
+              HorizontalOptions="FillAndExpand">
+
+                        <Label Grid.Column="0"
+                   Text="Desde:"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="#A0A0A0"
+                   VerticalOptions="Center"/>
+
+                        <DatePicker Grid.Column="1"
+                        Date="{Binding FechaDesde}"
+                        Format="dd/MM/yyyy"
+                        BackgroundColor="#2A2A3A"
+                        TextColor="#FFFFFF"
+                        FontSize="14"
+                        HorizontalOptions="Fill"/>
+
+                        <Label Grid.Column="2"
+                   Text="Hasta:"
+                   FontSize="12"
+                   FontAttributes="Bold"
+                   TextColor="#A0A0A0"
+                   VerticalOptions="Center"/>
+
+                        <DatePicker Grid.Column="3"
+                        Date="{Binding FechaHasta}"
+                        Format="dd/MM/yyyy"
+                        BackgroundColor="#2A2A3A"
+                        TextColor="#FFFFFF"
+                        FontSize="14"
+                        HorizontalOptions="Fill"/>
+
+                        <Button Grid.Column="4"
+                    Text="FILTRAR"
+                    Command="{Binding FiltrarCommand}"
+                    BackgroundColor="#7E57C2"
+                    TextColor="White"
+                    CornerRadius="12"
+                    FontAttributes="Bold"
+                    HeightRequest="40"
+                    WidthRequest="100"/>
+                    </Grid>
+                </HorizontalStackLayout>
+            </Frame>
+        </VerticalStackLayout>
+
+        <!-- Contenido principal: formulario izquierda + lista derecha -->
+        <Grid Grid.Row="1"
+              ColumnDefinitions="1*,3*"
+              ColumnSpacing="16">
+
+            <!-- Formulario (izquierda) -->
+            <Frame CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+                <ScrollView>
+                    <VerticalStackLayout Spacing="12">
+                        <Label Text="AGREGAR / EDITAR HITO"
+                               FontSize="14"
+                               FontAttributes="Bold"
+                               TextColor="#FFFFFF"
+                               HorizontalOptions="Center"/>
+
+                        <BoxView Color="#9B59B6"
+                                 HeightRequest="2"
+                                 HorizontalOptions="Fill"/>
+
+                        <Entry Placeholder="Título *"
+                               Text="{Binding NuevoTitulo}"
+                               BackgroundColor="#2A2A3A"
+                               TextColor="#FFFFFF"
+                               PlaceholderColor="#808080"
+                               FontSize="14"/>
+
+                        <Entry Placeholder="Lugar"
+                               Text="{Binding NuevoLugar}"
+                               BackgroundColor="#2A2A3A"
+                               TextColor="#FFFFFF"
+                               PlaceholderColor="#808080"
+                               FontSize="14"/>
+
+                        <Label Text="Fecha:"
+                               FontSize="12"
+                               TextColor="#A0A0A0"
+                               Margin="0,5,0,0"/>
+                        <DatePicker Date="{Binding NuevaFecha}"
+                                    Format="dd/MM/yyyy"
+                                    BackgroundColor="#2A2A3A"
+                                    TextColor="#FFFFFF"
+                                    FontSize="14"/>
+
+                        <Editor Placeholder="Descripción"
+                                Text="{Binding NuevaDescripcion}"
+                                BackgroundColor="#2A2A3A"
+                                TextColor="#FFFFFF"
+                                PlaceholderColor="#808080"
+                                FontSize="14"
+                                HeightRequest="100"/>
+
+                        <Button Text="GUARDAR"
+                                Command="{Binding GuardarCommand}"
+                                BackgroundColor="#4CAF50"
+                                TextColor="White"
+                                CornerRadius="12"
+                                FontAttributes="Bold"
+                                HeightRequest="44"/>
+
+                        <!-- Indicador si se está editando -->
+                        <Label Text="{Binding EditandoId, StringFormat='Editando ID: {0}'}"
+                               FontSize="10"
+                               TextColor="#FF6B6B"
+                               HorizontalOptions="Center"
+                               IsVisible="{Binding EditandoId, Converter={StaticResource IsNotNullConverter}}"/>
+                    </VerticalStackLayout>
+                </ScrollView>
+            </Frame>
+
+            <!-- Lista de hitos (derecha) -->
+            
+            <ScrollView Grid.Column="1">
+                <Frame
+                    CornerRadius="20"
+                   Padding="16"
+                   HasShadow="True">
+
+                <StackLayout Spacing="12">
+                    <Label Text="LISTA DE HITOS"
+                           FontSize="14"
+                           FontAttributes="Bold"
+                           TextColor="#FFFFFF"
+                           Margin="0,0,0,4"/>
+
+                    <CollectionView ItemsSource="{Binding Hitos}"
+                                    SelectionMode="None">
+                        <CollectionView.ItemTemplate>
+                            <DataTemplate>
+                                <Frame CornerRadius="16"
+                                       Padding="16"
+                                       Margin="0,8"
+                                       BackgroundColor="#1E1E2E"
+                                       HasShadow="True">
+                                    <Grid ColumnDefinitions="*,Auto"
+                                          ColumnSpacing="12">
+                                        <VerticalStackLayout Spacing="8">
+                                            <Label Text="{Binding Titulo}"
+                                                   FontSize="16"
+                                                   FontAttributes="Bold"
+                                                   TextColor="#FFFFFF"/>
+                                            <Label Text="{Binding FechaRealizacion, StringFormat='{0:dd/MM/yyyy}'}"
+                                                   FontSize="12"
+                                                   TextColor="#A0A0A0"/>
+                                            <Label Text="{Binding Lugar, StringFormat='{0}'}"
+                                                   FontSize="12"
+                                                   TextColor="#A0A0A0"
+                                                   IsVisible="{Binding Lugar, Converter={StaticResource IsNotNullConverter}}"/>
+                                            <Label Text="{Binding Descripcion}"
+                                                   FontSize="13"
+                                                   TextColor="#C0C0C0"
+                                                   LineBreakMode="WordWrap"/>
+                                        </VerticalStackLayout>
+
+                                        <VerticalStackLayout Grid.Column="1"
+                                                             Spacing="8">
+                                            <Button Text="EDITAR"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HitosViewModel}}, Path=EditarCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    BackgroundColor="#808080"
+                                                    TextColor="White"
+                                                    CornerRadius="10"
+                                                    HeightRequest="35"
+                                                    WidthRequest="80"
+                                                    FontSize="11"
+                                                    FontAttributes="Bold"/>
+
+                                            <Button Text="ELIMINAR"
+                                                    Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodels:HitosViewModel}}, Path=EliminarCommand}"
+                                                    CommandParameter="{Binding Id}"
+                                                    BackgroundColor="#DC2626"
+                                                    TextColor="White"
+                                                    CornerRadius="10"
+                                                    HeightRequest="35"
+                                                    WidthRequest="80"
+                                                    FontSize="11"
+                                                    FontAttributes="Bold"/>
+                                        </VerticalStackLayout>
+                                    </Grid>
+                                </Frame>
+                            </DataTemplate>
+                        </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </StackLayout>
+                </Frame>
+            </ScrollView>
+            
+        </Grid>
+    </Grid>
+</ContentPage>

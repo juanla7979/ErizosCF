@@ -1,0 +1,25 @@
+[33mc3f5434[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m listo el historial, solo falta meterle imagenes o algo, pero ya luego vemos
+[33md0672d3[m ya luego añadimos otras cosas. vamos a pasar a lo del historial de logros del itsur
+[33m57647bf[m se me olvidó subir uno XD
+[33m1aa2062[m ya se ven los charts, igual luego añado más, o así. también necesito hacer mejoras para que sea más intuitivo y eficiente para el usuario
+[33mf59e360[m ahí la van sacando deepseek y música de deltarune... LOL
+[33m506d4df[m ya se ven plots XD, ahora, falta que se vean todos, que sean más intuitivos, y arreglar bugs
+[33m75d2123[m tratando de hacer el módulo de comparar 2 monos. espero que claude y el soundtrack de undertale/deltarune y las horas infinitas de la noche, me ayuden a terminar esta parte del módulo... si no, me veré obligado a pasar de plano y continuar con otra cosa
+[33mca25579[m comparacion simplona a ver si chatgpt la hace mejor LXKJlkasdjflkjflkasdj
+[33m8a6ea5a[m ya funciona el bodrio de borrado lógico. o eso aparenta
+[33m08bd07b[m Ahora, el guardado lógico, toca que implementase en la BD. luego, mañana vemos, o al rato
+[33m761901d[m función para ver usuarios, y proximamente, borrado lógico
+[33meab9cdc[m limpiamos la basura
+[33maa7621d[m primer commit
+[33m617be07[m aún falta mucho por hacer, pero me voy a pasar a otras cosas, como los cruds y la parte del usuario. casi entro a la escuela, espero terminar antes de ello, al menos lo básico. y pulir el proyecto mientras en mis ratos libres
+[33mab0a68f[m Agregada la función de csv y excel, ahora, modifiqué con ayuda de chatgpt lo visual, ahora usaré deepseek para algo totalmente nuevo, pero lo guardo porque uno nunca sabe, las ias no valen verga XD mejor un respaldo, no vaya a ser la de malas.
+[33m39fbfd6[m ya ordena, aparentemente bien. no sé si me falte alguna columna o no, pero bueno, cosas menores. solo falta lo del excel/csv, reorganizar el código para mejor escalamiento y eso, arreglar lo de controles habilitados, y lo visual. y ya es todo lo que pienso añadir al dashboard, el csv/excel será el último control de momento
+[33mb95f0d9[m Ya hice algo, lo de las fechas funciona como un 60% bien, me causa ruido muchas cosas de la interfaz, la UX y esas cosas... Pero creo que ya es funcional. Tambíen chatgpt me dijo que estoy bien wey y que no hice bien la función de la segunda tabla... tenía razón, yo lo miraba en un escenario idealista, pero eso es mucho esperar de un miembro promedio de mi clun (YO). bueno, queda arreglar bugs menores, mejorar la presentación, los filtros para ordenar, el exporte a excel o csv, y mejorar muchísimo lo visual (Espero que la IA tire paro porque a mí se me da fatal...)... bueno, muchas cosas por hacer, pero ya estoy cansado mentalmente, necesito un despeje para volver con más... TAMBIÉN NECESITO MEJORAR MUCHO LA MODULARIDAD, ESCALABILIDAD Y LIMPIEZA DEL PROYECTO, PORQUE AL INICIO, AL NO SABER NADA Y DEPENDER DE LA IA, DEJÓ MUCHO CÓDIGO HORRIBLE, PERO AHORA TENGO EL SUFICIENTE CONOCIMIENTO PARA HACERLO
+[33m851521e[m Filtros terminados y funcionales, al menos eso dicen las RIGUROSAS pruebas unitarias e integrales que hice (moví un poco los componentes y jugué con ellos 3 minutos)
+[33m8ba0b9e[m Filtros terminados...?
+[33maaf582c[m Pues añadimos muchos filtros, creo que funcionan todos aunque no los probé muy a fondo. tengo que hacer uno de escuelas dinámico, también poner una opción para que los filtros sean estáticos o dinámicos, y así el usuario decida que onda jeje. ya eso lo haré mañana...
+[33m906682e[m Bueno, las dos tablas ya parecen funcionar... ahora, voy a meter filtros y tal, pero implica varios cambios en el proyecto, aprovechando que ya funcionan las tablas hago checkpoint o algo... me voy a dormir en lo que carga la laptop jeje
+[33ma20463d[m Primer tabla funcional, pero es estática, vamos deepseek y yo a intentar hacerla dinámica, no parece la gran cosa, pero hacemos respaldo por cualquier cosa... jeje
+[33ma23d386[m Tabla funcional con encabezados estáticos. todo bien creo, me voy a comer
+[33mca9326c[m Mandamos alm lo del crud de escuelas. fue por un bien mayor. ahora, tenemos una tabla simplona pero funcional y que no quiero perder
+[33maaf0f17[m Primer commit, funcionaba o eso creo
